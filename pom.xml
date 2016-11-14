@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>   
+        <groupId>org.alfresco</groupId>
+        <artifactId>alfresco-super-pom</artifactId>
+        <version>8</version>
+    </parent>   
+    <artifactId>alfresco-mbeans</artifactId>
+    <version>6.0-SNAPSHOT</version>
+    <name>Alfresco MBeans</name>
+    <description>Alfresco mbean utilities</description>
+
+    <scm>
+        <connection>scm:git:https://gitlab.alfresco.com/platform/alfresco-mbeans.git</connection>
+        <developerConnection>scm:git:https://gitlab.alfresco.com/platform/alfresco-mbeans.git</developerConnection>
+        <url>https://gitlab.alfresco.com/platform/alfresco-mbeans</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>alfresco-internal</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>alfresco-internal-snapshots</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+   
+    <properties>
+        <dependency.spring.version>3.2.16.RELEASE</dependency.spring.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${dependency.spring.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <tagNameFormat>@{project.version}</tagNameFormat>
+                    </configuration>        
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
