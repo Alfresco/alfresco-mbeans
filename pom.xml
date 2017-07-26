@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>alfresco-mbeans</artifactId>
-    <version>6.0</version>
+    <version>6.1-SNAPSHOT</version>
     <name>Alfresco MBeans</name>
     <description>Alfresco mbean utilities</description>
     <packaging>jar</packaging>
@@ -17,7 +17,7 @@
         <connection>scm:git:git@github.com:Alfresco/alfresco-mbeans.git</connection>
         <developerConnection>scm:git:git@github.com:Alfresco/alfresco-mbeans.git</developerConnection>
         <url>https://github.com/Alfresco/alfresco-mbeans</url>
-        <tag>6.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
