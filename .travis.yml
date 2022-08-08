@@ -6,11 +6,6 @@ git:
   depth: false
   quiet: true
 
-env:
-  global:
-    - RELEASE_VERSION=6.1
-    - DEVELOPMENT_VERSION=6.1-SNAPSHOT
-
 cache:
   directories:
     - ${HOME}/.m2/repository
