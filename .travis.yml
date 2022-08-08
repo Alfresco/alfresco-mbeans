@@ -27,7 +27,7 @@ jobs:
   include:
     - stage: Build and Test
       name: "Build and Test"
-      install: travis_wait 20 mvn -B -U
+      install: mvn -B -U install
 
     - name: "Release"
       stage: release
