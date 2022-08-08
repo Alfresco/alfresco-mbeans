@@ -27,7 +27,6 @@ jobs:
   include:
     - stage: Build and Test
       name: "Build and Test"
-      if: branch = master AND type != pull_request
       install: travis_wait 20 mvn -B -U
 
     - name: "Release"
