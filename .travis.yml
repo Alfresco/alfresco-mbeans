@@ -6,6 +6,11 @@ git:
   depth: false
   quiet: true
 
+env:
+  global:
+    - RELEASE_VERSION=6.1
+    - DEVELOPMENT_VERSION=6.1-SNAPSHOT
+
 cache:
   directories:
     - ${HOME}/.m2/repository
@@ -13,63 +18,25 @@ cache:
 branches:
   only:
     - master
-    - feature/ACS-3351_upgrade-to-Java-17
+    - /feature\/.*/
     - /release\/.*/
     - /support\/.*/
 
 stages:
-  - name: tests
-    if: commit_message !~ /\[skip tests\]/
-  - name: release
-    if: commit_message =~ /\[release\]/ AND branch ~= /^(master|support\/.+|release\/.+)$/ AND type != pull_request AND fork = false
-  - name: publish
-    if: commit_message ~= /\[publish\]/ AND branch ~= /^(master|support\/.+|release\/.+)$/ AND type != pull_request AND fork = false
+  - build and test
+  - release
 
 before_install: mkdir -p ${HOME}/.m2 && cp -rf _ci/settings.xml ${HOME}/.m2/
 
 jobs:
   include:
-    - name: "Unit Tests"
-      stage: tests
-      script: mvn -B -U install
+    - stage: Build and Test
+      name: "Build and Test"
+      if: branch = master AND type != pull_request
+      install: travis_wait 20 mvn -B -U
 
-    - name: "Release and Copy to S3 Staging Bucket"
+    - name: "Release"
       stage: release
-      script: travis_wait 60 bash _ci/maven_release.sh
-      before_deploy:
-        - mkdir -p deploy_dir
-        - ARTIFACT=$(find . -name "alfresco-mbeans-*.zip" -printf "%f\n" | head -1)
-        - export VERSION=$(echo "${ARTIFACT}" | sed -e "s/^alfresco-mbeans-//" -e "s/\.zip$//")
-        - ln "alfresco-ftr-distribution/target/${ARTIFACT}" "deploy_dir/${ARTIFACT}"
-        - ARTIFACT=$(find . -name "alfresco-mbeans-${VERSION}.jar" -printf "%f\n" | head -1)
-        - ln "alfresco-ftr-distribution/target/${ARTIFACT}" "deploy_dir/${ARTIFACT}"
-        - ARTIFACT=$(find . -name "alfresco-mbeans-${VERSION}.war" -printf "%f\n" | head -1)
-        - ln "alfresco-ftr/target/${ARTIFACT}" "deploy_dir/${ARTIFACT}"
-        - ls -lA deploy_dir
-      deploy:
-        - provider: s3
-          access_key_id: ${AWS_STAGING_ACCESS_KEY}
-          secret_access_key: ${AWS_STAGING_SECRET_KEY}
-          region: "eu-west-1"
-          bucket: "alfresco-artefacts-staging"
-          upload_dir: "alfresco-mbeans/releases/${VERSION}"
-          skip_cleanup: true
-          local_dir: "deploy_dir"
-          on:
-            all_branches: true
-      after_deploy: echo "Finished release and deployed to https://s3.console.aws.amazon.com/s3/buckets/alfresco-artefacts-staging/alfresco-mbeans/release/${VERSION}"
-
-
-    - name: "Copy to S3 Release Bucket"
-      stage: publish
-      addons:
-        artifacts: false
-      install: skip
-      script: skip
-      before_deploy: pip install awscli
-      deploy:
-        - provider: script
-          script: sh _ci/copy_to_release_bucket.sh
-          skip_cleanup: true
-          on:
-            all_branches: true
+      if: commit_message ~= /\[release\]/ AND branch ~= /^(master|SP\/.+|HF\/.+)$/
+      before_script: travis_wait bash _ci/cache_artifacts.sh
+      script: travis_wait 55 bash _ci/release.sh
