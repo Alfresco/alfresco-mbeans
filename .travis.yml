@@ -13,6 +13,7 @@ cache:
 branches:
   only:
     - master
+    - feature/ACS-3351_upgrade-to-Java-17
     - /release\/.*/
     - /support\/.*/
 
