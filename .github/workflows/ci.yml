@@ -26,7 +26,7 @@ jobs:
         id: build_number
         run: echo "build_number=${BUILD_NUMBER}" >> $GITHUB_OUTPUT
     outputs:
-      commit_message: ${{ steps.build_number.outputs.build_number }}
+      build_number: ${{ steps.build_number.outputs.build_number }}
 
   build_and_release:
     needs: get_build_number
