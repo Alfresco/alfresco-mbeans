@@ -1,0 +1,40 @@
+name: Alfresco MBeans CI
+
+on:
+  pull_request:
+    branches:
+      - master
+      - feature/**
+      - support/**
+      - release/**
+  push:
+    branches:
+      - master
+      - feature/**
+      - support/**
+      - release/**
+  workflow_dispatch:
+
+jobs:
+  get_build_number:
+    name: "Get build number"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.34.2
+      - name: "Store build number as job output"
+        id: build_number
+        run: echo "build_number=${BUILD_NUMBER}" >> $GITHUB_OUTPUT
+    outputs:
+      build_number: ${{ steps.build_number.outputs.build_number }}
+
+  build_and_release:
+    needs: get_build_number
+    name: "Build and Release"
+    uses: Alfresco/alfresco-build-tools/.github/workflows/build-and-release-maven.yml@v1.34.2
+    secrets: inherit
+    with:
+      auto-release: false
+      build-args: "-U"
+      release-args: "-Dbuildnumber=${{ needs.get_build_number.outputs.build_number }} -Dmaven.javadoc.skip -Dadditionalparam=-Xdoclint:none"
+      release-branches: "^master$|^support/.+$|^release/.+$"
