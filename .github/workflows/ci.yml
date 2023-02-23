@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.34.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.1
       - name: "Store build number as job output"
         id: build_number
         run: echo "build_number=${BUILD_NUMBER}" >> $GITHUB_OUTPUT
@@ -31,7 +31,7 @@ jobs:
   build_and_release:
     needs: get_build_number
     name: "Build and Release"
-    uses: Alfresco/alfresco-build-tools/.github/workflows/build-and-release-maven.yml@v1.34.2
+    uses: Alfresco/alfresco-build-tools/.github/workflows/build-and-release-maven.yml@v1.35.1
     secrets: inherit
     with:
       auto-release: false
