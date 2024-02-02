@@ -32,7 +32,7 @@
     </distributionManagement>
    
     <properties>
-        <dependency.spring.version>3.2.16.RELEASE</dependency.spring.version>
+        <dependency.spring.version>5.2.22.RELEASE</dependency.spring.version>
         <java.version>17</java.version>
         <maven.build.sourceVersion>${java.version}</maven.build.sourceVersion>
     </properties>
